@@ -11,7 +11,7 @@ const Home = (props: Props) => {
         <div>
           <h1 className="text-5xl text-gray-800 font-medium leading-normal">
             Introducing <br />
-            <span className="font-bold bg-brand-600 text-white px-4">Revenue based defi</span>
+            <span className="font-bold bg-brand-500 text-white px-4">Revenue based defi</span>
             <br />
             Lending / Borrowing
           </h1>

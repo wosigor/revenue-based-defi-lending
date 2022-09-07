@@ -22,9 +22,9 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
             ref={ref}
             className={clsx(
                 {
-                    'bg-brand-500 hover:bg-brand-600 active:bg-brand-600 hover:disabled:bg-brand-500 focus:ring-1 ring-brand-200 text-white ':
+                    'bg-brand-500 hover:bg-brand-600 active:bg-brand-600 hover:disabled:bg-brand-500 focus:ring-1 ring-brand-800 text-white ':
                     !outline && variant === 'primary',
-                    'bg-zinc-400/60 hover:bg-zinc-300 active:bg-zinc-300  text-black focus:ring-1 ring-brand-200':
+                    'bg-zinc-200 hover:bg-zinc-300 active:bg-zinc-300 text-black focus:ring-1  ring-gray-600':
                     !outline && variant === 'secondary',
                     'bg-emerald-600 hover:bg-emerald-600/75 active:bg-emerald-600/75  focus:ring-1 ring-emerald-100 text-white':
                     !outline && variant === 'success',
@@ -32,7 +32,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
                     !outline && variant === 'danger',
                     
                     'border-brand-500 bg-brand-800/10 hover:bg-brand-800/20 active:bg-brand-600/10 focus:bg-brand-600/10 focus:outline-none focus:ring-0 text-brand-400 ': outline && variant === 'primary',
-                    'border-gray-500 bg-gray-600/10 hover:bg-gray-500/10  active:bg-zinc-500/20 focus:bg-gray-500/20 text-gray-400 hover:text-gray-200 hover:border-gray-300  focus:outline-none focus:ring-0 ': outline && variant === 'secondary',
+                    'border-gray-500 bg-gray-600/10 hover:bg-gray-500/10  active:bg-zinc-500/20 focus:bg-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-900  focus:outline-none focus:ring-0 ': outline && variant === 'secondary',
                     'border ':outline,
                     'flex items-center  justify-center gap-2': (icon || loading) && children,
                     'px-3 py-1 text-sm ':size === 'sm',

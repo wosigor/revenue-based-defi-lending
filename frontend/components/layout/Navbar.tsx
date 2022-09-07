@@ -1,13 +1,18 @@
 import Link, { LinkProps } from "next/link";
+import { useRouter } from "next/router";
 import ConnectWallet from "./ConnectWallet";
 import Logo from "./Logo";
 
 type Props = {};
 
 const Navlink = (props: { children: React.ReactNode } & LinkProps) => {
+  const router = useRouter();
+
+  const isCurrentPath = router.asPath === props.href
+
   return (
     <Link href={props.href}>
-      <a className="font-medium duration-300 ease-out py-2 px-3 text-gray-600 hover:text-black hover:bg-gray-300 rounded-lg"> {props.children}</a>
+      <a className={`font-medium duration-300 ease-out py-2 px-3  hover:text-black  rounded-lg ${isCurrentPath ? " bg-gray-200 text-black" : " text-gray-500"}`}> {props.children}</a>
     </Link>
   );
 };
