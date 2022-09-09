@@ -1,0 +1,283 @@
+openapi: '3.1.0'
+info:
+  version: '0.1'
+  title: 'Borrower'
+  description: Borrowers and Borrower Loan Requests
+
+paths:
+  /borrowers:
+    post:
+      summary: Create a new borrower
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Borrower'
+      responses:
+        '200':
+          description: The borrower object
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Borrower'
+    put:
+      summary: Update borrower
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Borrower'
+      responses:
+        '200':
+          description: The borrower object
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Borrower'
+  /borrowers/{borrowerId}:
+    parameters:
+      - name: borrowerId
+        description: The unique identifier of the borrwer
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/BorrowerId'
+    get:
+      summary: Read a borrower
+      responses:
+        '200':
+          description: The borrower corresponding to the provided `borrowedId`
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Borrower'
+        404:
+          description: No borrower found for the provided `borrowedId`
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /borrowers/stripe_reports:
+    get:
+      summary: Get Stripe revenue users from the authorized Stripe account
+      responses:
+        '200':
+          description: 'JSON resposne of the Stripe revenue object'
+          content:
+            application/json:
+              schema: 
+                ref: '#/components/schemas/StripeReport'
+  /borrowers/loans:
+    post:
+      summary: Create borrower loan request
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/BorrowerLoanRequest'
+    get:
+      summary: Retrieve borrower loan Requests
+      responses:
+        '200':
+          description: 'JSON response of the loan requests of the borrower'
+          content:
+            application/json:
+              schema:
+                ref: '#/components/schemas/BorrowerLoanRequest'
+  /lenders:
+    post:
+      summary: Create a new lender
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Lender'
+      responses:
+        '200':
+          description: The lender object
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Lender'
+  /lenders/{lenderId}:
+    parameters:
+      - name: lenderId
+        description: The unique identifier of the lender
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/LenderId'
+    get:
+      summary: Read a lender
+      responses:
+        '200':
+          description: The lender corresponding to the provided `lenderId`
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lender'
+        404:
+          description: No borrower found for the provided `lenderId`
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /lenders/loans:
+    post:
+      summary: Create lender loan request
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/LenderLoanRequest'
+    get:
+      summary: Retrieve lender loan request
+      responses:
+        '200':
+          description: 'JSON response of the loan requests of the lender'
+          content:
+            application/json:
+              schema:
+                ref: '#/components/schemas/LenderLoanRequest'
+  /borrowers/{borrowerId}/loans/matches:
+    parameters:
+      - name: borrowerId
+        description: The unique identifier of the lender
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/BorrowerId'
+    get:
+      summary: Get all matched loans
+      responses:
+        '200':
+          description: 'Get matched loan details'
+          content:
+            application/json:
+              schema:
+                ref: '#/components/schemas/MatchedLoans'
+components:    
+  schemas:
+    BorrowerId:
+      description: The unique identifier of a borrower
+      type: string
+    Borrower:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: '#/components/schemas/BorrowerId'
+        name:
+          type: string
+        stripe_key:
+          type: string
+    LenderId:
+      description: The unique identifier of a lender
+      type: string
+    Lender:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: '#/components/schemas/LenderId'
+        name:
+          type: string
+    StripeReport:
+      description: Stripe Revenue report
+      type: object
+      required:
+        - report
+      properties:
+        report:
+          type: JSON
+    BorrowerLoanRequestId:
+      description: ID of the borrower loan BorrowerLoanRequest
+      type: string
+    BorrowerLoanRequest:
+      description: Borrower Loan Request
+      type: object
+      required:
+        type: object
+        required:
+          - id
+          - borrowerId
+          - amount
+        properties:
+          id: 
+            $ref: '#/components/schemas/BorrowerLoanRequestId'
+          borrowerId:
+            $ref: '#/components/schemas/BorrowerId'
+          amount:
+            type: integer
+    LenderLoanRequestId:
+      description: ID of the borrower loan LenderLoanRequest
+      type: string
+    LenderLoanRequest:
+      description: Lender Loan Request
+      type: object
+      required:
+        type: object
+        required:
+          - id
+          - lenderId
+          - amount
+        properties:
+          id: 
+            $ref: '#/components/schemas/LenderLoanRequestId'
+          lenderId: 
+            $ref: '#/components/schemas/LenderId'
+          amount:
+            type: integer
+    MarchedLoansId:
+      description: ID of the matched loans
+      type: string
+    MatchedLoans:
+      description: Matched Loans
+      type: object
+      required:
+        type: object
+        required:
+          - id 
+          - amount
+          - borrowerLoanRequestId
+          - lenderLoanRequestId
+        properties:
+          id:
+            $ref: '#/components/schemas/MatchedLoansId'
+          amount:
+            type: integer
+          borrowerLoanRequestId:
+            $ref: '#/components/schemas/BorrowerLoanRequestId'
+          lenderLoanRequestId:
+            $ref: '#/components/schemas/LenderLoanRequestId'
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          description: A human readable error message
+          type: string
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+security:
+  - ApiKey: []
