@@ -172,7 +172,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /lenders/loans:
+  /lenders/{lenderId}/loans:
     post:
       summary: Create lender loan request
       parameters:
@@ -189,6 +189,13 @@ paths:
               $ref: '#/components/schemas/LenderLoanRequest'
     get:
       summary: Retrieve lender loan request
+      parameters:
+        - name: lenderId
+          description: The unique identifier of the lender
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/LenderId'
       responses:
         '200':
           description: 'JSON response of the loan requests of the lender'
