@@ -175,13 +175,13 @@ paths:
   /lenders/loans:
     post:
       summary: Create lender loan request
-    parameters:
-      - name: lenderId
-        description: The unique identifier of the lender
-        in: path
-        required: true
-        schema:
-          $ref: '#/components/schemas/LenderId'
+      parameters:
+        - name: lenderId
+          description: The unique identifier of the lender
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/LenderId'
       requestBody:
         content:
           application/json:
