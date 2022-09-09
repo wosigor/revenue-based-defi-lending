@@ -63,8 +63,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /borrowers/stripe_reports:
+  /borrowers/{borrowerId}/stripe_reports:
     get:
+      parameters:
+      - name: borrowerId
+        description: The unique identifier of the borrwer
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/BorrowerId'
       summary: Get Stripe revenue users from the authorized Stripe account
       responses:
         '200':
@@ -73,9 +80,16 @@ paths:
             application/json:
               schema: 
                 ref: '#/components/schemas/StripeReport'
-  /borrowers/loans:
+  /borrowers/{borrowerId}/loans:
     post:
       summary: Create borrower loan request
+      parameters:
+      - name: borrowerId
+        description: The unique identifier of the borrwer
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/BorrowerId'
       requestBody:
         content:
           application/json:
@@ -83,6 +97,13 @@ paths:
               $ref: '#/components/schemas/BorrowerLoanRequest'
     get:
       summary: Retrieve borrower loan Requests
+      parameters:
+      - name: borrowerId
+        description: The unique identifier of the borrwer
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/BorrowerId'
       responses:
         '200':
           description: 'JSON response of the loan requests of the borrower'
@@ -90,6 +111,23 @@ paths:
             application/json:
               schema:
                 ref: '#/components/schemas/BorrowerLoanRequest'
+  /borrowers/{borrowerId}/loans/matches:
+    parameters:
+      - name: borrowerId
+        description: The unique identifier of the lender
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/BorrowerId'
+    get:
+      summary: Get all matched loans
+      responses:
+        '200':
+          description: 'Get matched loan details'
+          content:
+            application/json:
+              schema:
+                ref: '#/components/schemas/MatchedLoans'
   /lenders:
     post:
       summary: Create a new lender
@@ -137,6 +175,13 @@ paths:
   /lenders/loans:
     post:
       summary: Create lender loan request
+      parameters:
+        - name: lenderId
+          description: The unique identifier of the lender
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/LenderId'
       requestBody:
         content:
           application/json:
@@ -151,23 +196,6 @@ paths:
             application/json:
               schema:
                 ref: '#/components/schemas/LenderLoanRequest'
-  /borrowers/{borrowerId}/loans/matches:
-    parameters:
-      - name: borrowerId
-        description: The unique identifier of the lender
-        in: path
-        required: true
-        schema:
-          $ref: '#/components/schemas/BorrowerId'
-    get:
-      summary: Get all matched loans
-      responses:
-        '200':
-          description: 'Get matched loan details'
-          content:
-            application/json:
-              schema:
-                ref: '#/components/schemas/MatchedLoans'
 components:    
   schemas:
     BorrowerId:
