@@ -20,6 +20,14 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Borrower'
+  /borrowers/{borrowerId}:
+    parameters:
+      - name: borrowerId
+        description: The unique identifier of the borrwer
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/BorrowerId'
     put:
       summary: Update borrower
       requestBody:
@@ -34,14 +42,6 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Borrower'
-  /borrowers/{borrowerId}:
-    parameters:
-      - name: borrowerId
-        description: The unique identifier of the borrwer
-        in: path
-        required: true
-        schema:
-          $ref: '#/components/schemas/BorrowerId'
     get:
       summary: Read a borrower
       responses:
@@ -75,7 +75,7 @@ paths:
       summary: Get Stripe revenue users from the authorized Stripe account
       responses:
         '200':
-          description: 'JSON resposne of the Stripe revenue object'
+          description: 'JSON response of the Stripe revenue object'
           content:
             application/json:
               schema: 
@@ -95,6 +95,13 @@ paths:
           application/json:
             schema: 
               $ref: '#/components/schemas/BorrowerLoanRequest'
+      responses:
+            '200':
+              description: 'JSON response of the Loans object'
+              content:
+                application/json:
+                  schema: 
+                    ref: '#/components/schemas/BorrowerLoanRequest'
     get:
       summary: Retrieve borrower loan Requests
       parameters:
@@ -187,6 +194,13 @@ paths:
           application/json:
             schema: 
               $ref: '#/components/schemas/LenderLoanRequest'
+      responses:
+        '200':
+          description: The lender loan request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LenderLoanRequest'
     get:
       summary: Retrieve lender loan request
       parameters:
@@ -236,11 +250,52 @@ components:
     StripeReport:
       description: Stripe Revenue report
       type: object
-      required:
-        - report
       properties:
-        report:
-          type: JSON
+        currency: 
+          type: string          
+        starting_balance:
+          type: number
+        activity_gross: 
+          type: number
+        activity_fee: 
+          type: number
+        activity: 
+          type: number
+        payouts_gross: 
+          type: number
+        payouts_fee:
+          type: number
+        payouts: 
+          type: number
+        ending_balance: 
+          type: number
+        interval_start: 
+          type: number
+        interval_end: 
+          type: number
+      required:
+        - currency
+        - starting_balance
+        - activity_gross
+        - activity_fee
+        - activity
+        - payouts_gross
+        - payouts
+        - ending_balance
+        - interval_start
+        - interval_end
+      examples:
+        currency: "eur"
+        starting_balance: 0.0
+        activity_gross: 20.0
+        activity_fee: 0.83
+        activity: 19.17
+        payouts_gross: 0.0
+        payouts_fee: 0.0
+        payouts: 0.0
+        ending_balance: 19.17
+        interval_start: 1661806800
+        interval_end: 1661990400
     BorrowerLoanRequestId:
       description: ID of the borrower loan BorrowerLoanRequest
       type: string
@@ -248,18 +303,16 @@ components:
       description: Borrower Loan Request
       type: object
       required:
-        type: object
-        required:
-          - id
-          - borrowerId
-          - amount
-        properties:
-          id: 
-            $ref: '#/components/schemas/BorrowerLoanRequestId'
-          borrowerId:
-            $ref: '#/components/schemas/BorrowerId'
-          amount:
-            type: integer
+        - id
+        - borrowerId
+        - amount
+      properties:
+        id: 
+          $ref: '#/components/schemas/BorrowerLoanRequestId'
+        borrowerId:
+          $ref: '#/components/schemas/BorrowerId'
+        amount:
+          type: integer
     LenderLoanRequestId:
       description: ID of the borrower loan LenderLoanRequest
       type: string
@@ -267,18 +320,16 @@ components:
       description: Lender Loan Request
       type: object
       required:
-        type: object
-        required:
-          - id
-          - lenderId
-          - amount
-        properties:
-          id: 
-            $ref: '#/components/schemas/LenderLoanRequestId'
-          lenderId: 
-            $ref: '#/components/schemas/LenderId'
-          amount:
-            type: integer
+        - id
+        - lenderId
+        - amount
+      properties:
+        id: 
+          $ref: '#/components/schemas/LenderLoanRequestId'
+        lenderId: 
+          $ref: '#/components/schemas/LenderId'
+        amount:
+          type: integer
     MarchedLoansId:
       description: ID of the matched loans
       type: string
@@ -286,21 +337,19 @@ components:
       description: Matched Loans
       type: object
       required:
-        type: object
-        required:
-          - id 
-          - amount
-          - borrowerLoanRequestId
-          - lenderLoanRequestId
-        properties:
-          id:
-            $ref: '#/components/schemas/MatchedLoansId'
-          amount:
-            type: integer
-          borrowerLoanRequestId:
-            $ref: '#/components/schemas/BorrowerLoanRequestId'
-          lenderLoanRequestId:
-            $ref: '#/components/schemas/LenderLoanRequestId'
+        - id 
+        - amount
+        - borrowerLoanRequestId
+        - lenderLoanRequestId
+      properties:
+        id:
+          $ref: '#/components/schemas/MatchedLoansId'
+        amount:
+          type: integer
+        borrowerLoanRequestId:
+          $ref: '#/components/schemas/BorrowerLoanRequestId'
+        lenderLoanRequestId:
+          $ref: '#/components/schemas/LenderLoanRequestId'
     Error:
       type: object
       required:
