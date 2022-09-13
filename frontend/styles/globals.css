@@ -9,7 +9,7 @@
 @layer base {
   body {
     font-family: "Sora", sans-serif;
-    @apply min-h-screen;
+    @apply min-h-screen bg-gray-100;
   }
   
 }

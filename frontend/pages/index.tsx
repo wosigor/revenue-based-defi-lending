@@ -1,3 +1,4 @@
+import AddLoanDetailsForm from "components/lend-flow/AddLoanDetailsForm";
 import React from "react";
 
 type Props = {};
@@ -19,6 +20,7 @@ const Home = (props: Props) => {
         {/* Hero Right Side */}
         <div></div>
       </section>
+      <AddLoanDetailsForm/>
     </main>
   );
 };
