@@ -19,6 +19,7 @@
     "next-auth": "^4.10.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.35.0",
     "react-icons": "^4.4.0",
     "siwe": "^1.1.2",
     "wagmi": "^0.6.5"

@@ -1,26 +1,40 @@
 import React, { useState, useCallback } from "react";
-import { NextPage } from "next";
+import {
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
 import Heading from "components/ui/Heading";
 import { Input } from "components/ui/Input";
 import Button from "components/ui/Button";
 import { BiDollar } from "react-icons/bi";
 import { FiPercent } from "react-icons/fi";
 import { useRouter } from "next/router";
+import { getSession } from "next-auth/react";
+import { getToken } from "next-auth/jwt";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import DetailsForm from "components/borrow-flow/AddLoanDetails";
+import AddLoanDetails from "components/borrow-flow/AddLoanDetails";
 
-type Props = {};
+type AuthenticatedPageProps = InferGetServerSidePropsType<
+  typeof getServerSideProps
+>;
 
 enum Steps {
   GET_STARTED,
-  SPRUCEID_SIGNUP,
   CONNECT_STRIPE,
   ADD_LOAN_DETAILS,
 }
 
-const BorrowPage: NextPage = (props: Props) => {
+const BorrowPage: NextPage = ({ address }: AuthenticatedPageProps) => {
   // current step , defined in Steps enum
   const [step, setStep] = useState<Steps>(Steps.GET_STARTED);
   const router = useRouter();
-  
+  const { openConnectModal } = useConnectModal();
+
+  if (!address && openConnectModal) {
+    openConnectModal();
+  }
 
   const renderBorrowFlow = useCallback(() => {
     switch (step) {
@@ -35,30 +49,11 @@ const BorrowPage: NextPage = (props: Props) => {
               Dolores optio qui modi deleniti.
             </p>
             <Button
-              onClick={() => setStep(Steps.SPRUCEID_SIGNUP)}
-              size="lg"
-              variant="primary"
-            >
-              Let's Start
-            </Button>
-          </div>
-        );
-      }
-      case Steps.SPRUCEID_SIGNUP: {
-        return (
-          <div className="flex flex-col items-center justify-center ">
-            <Heading className="">Signup with SpruceID </Heading>
-            <p className=" max-w-2xl my-8 text-center">
-              Sign-in with Ethereum, enabling users to control their identity
-              with their Ethereum account and ENS Profile instead of relying on
-              a traditional intermediary.
-            </p>
-            <Button
               onClick={() => setStep(Steps.CONNECT_STRIPE)}
               size="lg"
               variant="primary"
             >
-              Start
+              Let's Start
             </Button>
           </div>
         );
@@ -83,44 +78,28 @@ const BorrowPage: NextPage = (props: Props) => {
       }
 
       case Steps.ADD_LOAN_DETAILS: {
-        return (
-          <div className="flex flex-col items-center justify-center ">
-            <Heading>Add Loan Details</Heading>
-            <div className="max-w-2xl w-full space-y-6 mt-12">
-              <Input
-                pre={<BiDollar className="h-6 w-6" />}
-                type="number"
-                label="Loan Amount"
-                placeholder="Enter loan amount"
-              />
-              <Input
-                pre={<FiPercent className="h-6 w-6" />}
-                type="number"
-                label="Minimum Interest Rate"
-                placeholder="Enter minimum interest rate you can offer"
-              />
-              <Input
-                pre={<FiPercent className="h-6 w-6" />}
-                type="number"
-                label="Maximum Interest Rate"
-                placeholder="Enter maximum interest rate you can offer"
-              />
-              <div className="grid grid-cols-2 gap-4 pt-6">
-                <Button size="lg" onClick={()=>router.push('/')}>Cancel</Button>
-                <Button variant="primary" size="lg">
-                  Mint Loan Request NFT
-                </Button>
-              </div>
-            </div>
-          </div>
-        );
+        return <AddLoanDetails />;
       }
       default:
         return <div>Seems like you are lost friend </div>;
     }
   }, [step]);
 
-  return <div className="pt-16">{renderBorrowFlow()}</div>;
+  return <div>{renderBorrowFlow()}</div>;
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+  const token = await getToken({ req: context.req });
+
+  const address = token?.sub ?? null;
+  // if we have address value , server knows we are authenticated
+
+  return {
+    props: {
+      address,
+    },
+  };
 };
 
 export default BorrowPage;

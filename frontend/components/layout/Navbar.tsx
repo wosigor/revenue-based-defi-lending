@@ -33,7 +33,7 @@ const Navbar = (props: Props) => {
           <Navlink href="/borrow">Borrow</Navlink>
         </div>
         {/* <Button loading variant="primary">Connect Wallet</Button> */}
-        <ConnectButton />
+        <ConnectButton   />
       </nav>
     </header>
   );
