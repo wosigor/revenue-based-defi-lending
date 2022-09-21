@@ -1,8 +1,8 @@
-type StripeData = {
+export type StripeData = {
   revenue: number;
 };
 
-type BorrowLoanFormData = {
+export type BorrowLoanFormData = {
   name: string; // company name
   description: string; // company description
   email: string;
@@ -10,6 +10,8 @@ type BorrowLoanFormData = {
   linkedIn?: string;
   website?: string;
   amount: nunber;
+  stripeKey: string;
+  revenue: string;
 };
 
 type LoanData = StripeData & BorrowLoanFormData;

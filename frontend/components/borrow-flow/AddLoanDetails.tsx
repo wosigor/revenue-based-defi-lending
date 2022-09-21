@@ -12,6 +12,7 @@ import {
 import { useForm } from "react-hook-form";
 import { TextArea } from "components/ui/TextArea";
 import { FiGlobe } from "react-icons/fi";
+import { BorrowLoanFormData } from "types";
 
 type Props = {};
 

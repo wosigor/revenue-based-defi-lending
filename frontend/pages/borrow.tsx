@@ -5,31 +5,37 @@ import {
   NextPage,
 } from "next";
 import Heading from "components/ui/Heading";
-import { Input } from "components/ui/Input";
 import Button from "components/ui/Button";
-import { BiDollar } from "react-icons/bi";
-import { FiPercent } from "react-icons/fi";
 import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import { getToken } from "next-auth/jwt";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import DetailsForm from "components/borrow-flow/AddLoanDetails";
 import AddLoanDetails from "components/borrow-flow/AddLoanDetails";
+import ConnectStripe from "components/borrow-flow/ConnectStripe";
+import { useForm } from "react-hook-form";
+import { BorrowLoanFormData } from "types";
 
 type AuthenticatedPageProps = InferGetServerSidePropsType<
   typeof getServerSideProps
 >;
 
-enum Steps {
+export enum Steps {
   GET_STARTED,
   CONNECT_STRIPE,
+  SHOW_REVENUE_REPORT,
   ADD_LOAN_DETAILS,
 }
 
 const BorrowPage: NextPage = ({ address }: AuthenticatedPageProps) => {
   // current step , defined in Steps enum
-  const [step, setStep] = useState<Steps>(Steps.GET_STARTED);
+  const [step, setStep] = useState<Steps>(Steps.CONNECT_STRIPE);
   const router = useRouter();
+  const {
+    register,
+    formState: { errors },
+    watch,
+  } = useForm<BorrowLoanFormData>({});
+
   const { openConnectModal } = useConnectModal();
 
   if (!address && openConnectModal) {
@@ -60,20 +66,11 @@ const BorrowPage: NextPage = ({ address }: AuthenticatedPageProps) => {
       }
       case Steps.CONNECT_STRIPE: {
         return (
-          <div className="flex flex-col items-center justify-center ">
-            <Heading> Connect Stripe </Heading>
-            <p className=" max-w-2xl my-8 text-center">
-              Connect and authorize Stripe account for verifying revenue
-              information.
-            </p>
-            <Button
-              onClick={() => setStep(Steps.ADD_LOAN_DETAILS)}
-              size="lg"
-              variant="primary"
-            >
-              Connect Stripe
-            </Button>
-          </div>
+          <ConnectStripe
+            stripeKeyValue={watch("stripeKey")}
+            register={register}
+            setStep={setStep}
+          />
         );
       }
 
