@@ -9,25 +9,23 @@ import { Steps } from "pages/borrow";
 type Props = {
   stripeKey: string;
   setStep: Dispatch<SetStateAction<Steps>>;
-  report: StripeReport
-  setReport: Dispatch<SetStateAction<StripeReport>>
+  setReport: Dispatch<SetStateAction<StripeReport |null>>;
 };
 
-
-
-const ShowRevenueReport = ({ stripeKey,setStep,report,setReport }: Props) => {
+const ShowRevenueReport = ({ stripeKey, setStep, setReport }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [report, _setReport] = useState<StripeReport>({} as StripeReport);
+
   const getRevenueReport = async () => {
     setLoading(true);
     try {
       console.log(stripeKey);
-      const report = await axios
+      const _report = await axios
         .post("/api/get-stripe-report/", { stripeKey })
         .then((res) => res.data);
-      console.log(report);
-      if (report) {
-        setReport(report);
-      }
+      console.log({ _report });
+      setReport(_report);
+      _setReport(_report);
     } catch (err) {
       console.error(err);
     }
@@ -35,7 +33,7 @@ const ShowRevenueReport = ({ stripeKey,setStep,report,setReport }: Props) => {
   };
 
   useEffect(() => {
-    getRevenueReport();
+    (async () => await getRevenueReport())();
   }, []);
 
   const startIntervalDate = report && new Date(report?.interval_start * 1000);
@@ -72,7 +70,7 @@ const ShowRevenueReport = ({ stripeKey,setStep,report,setReport }: Props) => {
                   Gross Revenue
                 </th>
                 <td className="py-4 px-6 ">
-                  {report?.activity_gross} {report?.currency?.toUpperCase()}{" "}
+                  {report?.activity_gross} {report?.currency?.toUpperCase()}
                 </td>
               </tr>
               <tr className="bg-white border-b cursor-pointer hover:bg-gray-50 ">
@@ -83,10 +81,10 @@ const ShowRevenueReport = ({ stripeKey,setStep,report,setReport }: Props) => {
                   Fees Paid
                 </th>
                 <td className="py-4 px-6 ">
-                  {report?.activity_fee?.toFixed(2)}{" "}
-                  {report?.currency?.toUpperCase()}{" "}
+                  {report?.activity_fee?.toFixed(2)}
+                  {report?.currency?.toUpperCase()}
                 </td>
-              </tr>{" "}
+              </tr>
               <tr className="bg-white border-b cursor-pointer hover:bg-gray-50 ">
                 <th
                   scope="row"
@@ -95,19 +93,30 @@ const ShowRevenueReport = ({ stripeKey,setStep,report,setReport }: Props) => {
                   Net Revenue
                 </th>
                 <td className="py-4 px-6 font-medium text-green-500">
-                  {report?.activity?.toFixed(2)}{" "}
-                  {report?.currency?.toUpperCase()}{" "}
+                  {report?.activity?.toFixed(2)}
+                  {report?.currency?.toUpperCase()}
                 </td>
               </tr>
             </tbody>
           </table>
           <div className="flex items-center justify-between">
-          <Button type='button' onClick={()=>setStep(Steps.CONNECT_STRIPE)}  size="lg" className="mt-8">
-            Back
-          </Button>
-          <Button type="button" onClick={()=>setStep(Steps.ADD_LOAN_DETAILS)} variant="primary" size="lg" className="mt-8">
-            Next
-          </Button>
+            <Button
+              type="button"
+              onClick={() => setStep(Steps.CONNECT_STRIPE)}
+              size="lg"
+              className="mt-8"
+            >
+              Back
+            </Button>
+            <Button
+              type="button"
+              onClick={() => setStep(Steps.ADD_COMPANY_DETAILS)}
+              variant="primary"
+              size="lg"
+              className="mt-8"
+            >
+              Next
+            </Button>
           </div>
         </div>
       )}

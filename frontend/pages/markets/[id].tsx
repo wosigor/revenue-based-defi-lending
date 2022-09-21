@@ -1,22 +1,29 @@
+import LendModal from "components/lend-flow/LendModal";
 import Button from "components/ui/Button";
 import Heading from "components/ui/Heading";
-import React from "react";
+import React, { useState } from "react";
 import { FiExternalLink } from "react-icons/fi";
 
 type Props = {};
 
 const LoanPage = (props: Props) => {
+  const [lendModal,setLendModal] = useState<boolean>(false);
+  
+  const borrowRequestId = 1;
+  
   return (
+    <>
+    <LendModal borrowerId={borrowRequestId} borrowerName={"<CompanyName here>"} isOpen={lendModal} setIsOpen={setLendModal}  />
     <div className="">
       <div className="flex   items-center gap-8">
         <img
           className="w-20 h-20 rounded-full object-cover object-center"
           src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=928&q=80"
           alt="image"
-        />
+          />
         <div>
           <p className="uppercase text-gray-500 mb-1">Borrower</p>
-          <p className="font-medium text-lg">Company Name</p>
+          <p className="font-medium text-lg">Company </p>
         </div>
         <div className="border-l-2 pl-8 py-2 ">
           <p className="uppercase text-gray-500 mb-1">Revenue</p>
@@ -65,7 +72,7 @@ const LoanPage = (props: Props) => {
           <a
             href="#"
             className="flex gap-2 items-center hover:underline underline-offset-4 cursor-pointer "
-          >
+            >
             Twitter <FiExternalLink />
           </a>
           <a
@@ -77,12 +84,13 @@ const LoanPage = (props: Props) => {
         </div>
         <div className="flex items-center gap-4 justify-end">
           <Button size="lg">Message</Button>
-          <Button size="lg" variant="primary">
+          <Button onClick={()=>setLendModal(true)} size="lg" variant="primary">
             Lend
           </Button>
         </div>
       </div>
     </div>
+            </>
   );
 };
 

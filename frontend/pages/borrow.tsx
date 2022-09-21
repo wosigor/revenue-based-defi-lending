@@ -6,7 +6,6 @@ import {
 } from "next";
 import Heading from "components/ui/Heading";
 import Button from "components/ui/Button";
-import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import { getToken } from "next-auth/jwt";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -14,7 +13,8 @@ import ConnectStripe from "components/borrow-flow/ConnectStripe";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BorrowLoanFormData, StripeReport } from "types";
 import ShowRevenueReport from "components/borrow-flow/ShowRevenueReport";
-import AddBorrowRequestDetails from "components/borrow-flow/AddBorrowRequestDetails";
+import AddBorrowRequestDetails from "components/borrow-flow/AddBorrowDetails";
+import AddCompanyDetails from "components/borrow-flow/AddCompanyDetails";
 
 type AuthenticatedPageProps = InferGetServerSidePropsType<
   typeof getServerSideProps
@@ -24,20 +24,31 @@ export enum Steps {
   GET_STARTED,
   CONNECT_STRIPE,
   SHOW_REVENUE_REPORT,
-  ADD_LOAN_DETAILS,
+  ADD_COMPANY_DETAILS,
+  ADD_BORROW_DETAILS,
 }
 
 const BorrowPage: NextPage = ({ address }: AuthenticatedPageProps) => {
   // current step , defined in Steps enum
-  const [step, setStep] = useState<Steps>(Steps.ADD_LOAN_DETAILS);
-  const [stripeReport,setStripeReport] = useState<StripeReport>({} as StripeReport);
-  
+  const [step, setStep] = useState<Steps>(Steps.GET_STARTED);
+  const [stripeReport, setStripeReport] = useState<StripeReport | null>(null);
+
   const {
     register,
     formState: { errors },
     watch,
-    handleSubmit
-  } = useForm<BorrowLoanFormData>({});
+    handleSubmit,
+  } = useForm<BorrowLoanFormData>({
+    mode: "onBlur",
+    defaultValues: {
+      name: "Example Name",
+      description: "Super cool company ",
+      email: "example@xyz.com",
+      linkedIn: "https://linkedin.com/in/",
+      twitter: "https://twitter.com/",
+      website: "https://example.xyz",
+    },
+  });
 
   const { openConnectModal } = useConnectModal();
 
@@ -45,11 +56,16 @@ const BorrowPage: NextPage = ({ address }: AuthenticatedPageProps) => {
     openConnectModal();
   }
 
+  const createBorrowRequest: SubmitHandler<BorrowLoanFormData> = (data) => {
+    console.log("Form Data", data);
+    console.log("Stripe Report", stripeReport);
 
-  const createBorrowRequest:SubmitHandler<BorrowLoanFormData> = (data) => {
-    console.log(data);
-  }
-
+    // 1. Mint NFT from NFTPort 
+    // 2. Get tokenId
+    // 3. call createBorrowRequest from smart contract
+    // 4. Redirect to Marketplace
+  
+  };
 
   const renderBorrowFlow = useCallback(() => {
     switch (step) {
@@ -83,17 +99,43 @@ const BorrowPage: NextPage = ({ address }: AuthenticatedPageProps) => {
         );
       }
       case Steps.SHOW_REVENUE_REPORT: {
-        return <ShowRevenueReport stripeKey={watch("stripeKey")} setStep={setStep} report={stripeReport} setReport={setStripeReport}/>;
+        return (
+          <ShowRevenueReport
+            stripeKey={watch("stripeKey")}
+            setStep={setStep}
+            setReport={setStripeReport}
+          />
+        );
       }
-      case Steps.ADD_LOAN_DETAILS: {
-        return <AddBorrowRequestDetails watch={watch} register={register} setStep={setStep} report={stripeReport}/>;
+      case Steps.ADD_COMPANY_DETAILS: {
+        return (
+          <AddCompanyDetails
+            errors={errors}
+            register={register}
+            setStep={setStep}
+          />
+        );
+      }
+      case Steps.ADD_BORROW_DETAILS: {
+        return (
+          <AddBorrowRequestDetails
+            watch={watch}
+            register={register}
+            setStep={setStep}
+            report={stripeReport}
+          />
+        );
       }
       default:
         return <div>Seems like you are lost friend </div>;
     }
   }, [step]);
 
-  return <form onSubmit={handleSubmit(createBorrowRequest)}>{renderBorrowFlow()}</form>;
+  return (
+    <form onSubmit={handleSubmit(createBorrowRequest)}>
+      {renderBorrowFlow()}
+    </form>
+  );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

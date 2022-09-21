@@ -26,7 +26,7 @@ const SelectInput: React.FC<Props<SelectOption>> = ({
       {label && <div className="mb-2 font-medium text-gray-800 ">{label}</div>}
       <Listbox value={value} onChange={setValue}>
         <div className="relative">
-          <Listbox.Button className="relative font-normal font-body w-full py-2 pl-4 pr-10 text-left  ring-2 ring-gray-400   shadow-md rounded-lg cursor-pointer focus:ring-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75  focus-visible:ring-primary">
+          <Listbox.Button className="relative font-normal font-body w-full py-2 pl-4 pr-10 text-left  ring-1 ring-gray-400  rounded-md cursor-pointer focus:ring-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75  focus-visible:ring-primary">
             <span className="block truncate">{value.name}</span>
             <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
               <HiSelector
