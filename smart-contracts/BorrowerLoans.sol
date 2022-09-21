@@ -13,7 +13,7 @@ contract BorrowerLoans {
         uint256 loanAmount_,
         uint8 payoutRate_,
         uint256 loanFee_,
-        string memory baseURI
+        string memory baseURI_
     ) public {
         require(
             borrowerLoans[msg.sender] == 0,
@@ -27,11 +27,15 @@ contract BorrowerLoans {
             payoutRate_,
             loanFee_,
             msg.sender,
-            7
+            7,
+            baseURI_
         );
-        //loanRequest.setBaseURI(baseURI);
         borrowers.push(msg.sender);
         loanRequestAddresses[msg.sender] = loanRequest;
         borrowerLoans[msg.sender] = loanAmount_;
+    }
+
+    function getAllBorrowers() external view returns (address[] memory) {
+        return borrowers;
     }
 }

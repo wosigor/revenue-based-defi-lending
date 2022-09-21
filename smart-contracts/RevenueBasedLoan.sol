@@ -35,6 +35,9 @@ contract RevenueBasedLoan is ERC721 {
     // Time in days for lending the required amount before the loan request gets deprecated
     uint256 public immutable daysToFill;
 
+    // URI of Borrower's Stripe data at the time of creation
+    string public baseURI;
+
     // Tracks the amount lent per NFT id
     mapping(uint => uint) public idToLoanAmount;
 
@@ -59,7 +62,8 @@ contract RevenueBasedLoan is ERC721 {
         uint8 payoutRate_,
         uint256 loanFee_,
         address borrower_,
-        uint timeToFill_
+        uint timeToFill_,
+        string memory baseURI_
     ) ERC721(name_, symbol_) {
         loanAmount = loanAmount_;
         payoutRate = payoutRate_;
@@ -67,6 +71,7 @@ contract RevenueBasedLoan is ERC721 {
         borrower = borrower_;
         daysToFill = timeToFill_;
         timeOfCreation = block.timestamp;
+        baseURI = baseURI_;
     }
 
     // Loans funds to the contract and mints an NFT certifying the loan
@@ -162,7 +167,9 @@ contract RevenueBasedLoan is ERC721 {
         }("");
         require(success, "Failed to send the funds");
 
-        //emit BorrowerWithdrawal(_amount);
+        emit BorrowerWithdrawal(
+            idToLoanAmount[_loanId] - idToWithdrawnAmount[_loanId]
+        );
     }
 
     // Computes the total amount settled per loanId
@@ -172,5 +179,9 @@ contract RevenueBasedLoan is ERC721 {
         returns (uint256)
     {
         return ((paidAmount * idToLoanAmount[_loanId]) / fundedAmount); // Amount returned for that partial loan fill
+    }
+
+    function _baseURI() internal view override returns (string memory) {
+        return baseURI;
     }
 }
