@@ -1,5 +1,14 @@
-export type StripeData = {
-  revenue: number;
+export type StripeReport = {
+  currency: string;
+  starting_balance: number;
+  activity_gross: number;
+  activity_fee: number;
+  activity: number;
+  payouts_gross: number;
+  payouts: number;
+  ending_balance: number;
+  interval_start: number;
+  interval_end: number;
 };
 
 export type BorrowLoanFormData = {

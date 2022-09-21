@@ -10,10 +10,11 @@ import { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import { getToken } from "next-auth/jwt";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import AddLoanDetails from "components/borrow-flow/AddLoanDetails";
 import ConnectStripe from "components/borrow-flow/ConnectStripe";
-import { useForm } from "react-hook-form";
-import { BorrowLoanFormData } from "types";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { BorrowLoanFormData, StripeReport } from "types";
+import ShowRevenueReport from "components/borrow-flow/ShowRevenueReport";
+import AddBorrowRequestDetails from "components/borrow-flow/AddBorrowRequestDetails";
 
 type AuthenticatedPageProps = InferGetServerSidePropsType<
   typeof getServerSideProps
@@ -28,12 +29,14 @@ export enum Steps {
 
 const BorrowPage: NextPage = ({ address }: AuthenticatedPageProps) => {
   // current step , defined in Steps enum
-  const [step, setStep] = useState<Steps>(Steps.CONNECT_STRIPE);
-  const router = useRouter();
+  const [step, setStep] = useState<Steps>(Steps.ADD_LOAN_DETAILS);
+  const [stripeReport,setStripeReport] = useState<StripeReport>({} as StripeReport);
+  
   const {
     register,
     formState: { errors },
     watch,
+    handleSubmit
   } = useForm<BorrowLoanFormData>({});
 
   const { openConnectModal } = useConnectModal();
@@ -41,6 +44,12 @@ const BorrowPage: NextPage = ({ address }: AuthenticatedPageProps) => {
   if (!address && openConnectModal) {
     openConnectModal();
   }
+
+
+  const createBorrowRequest:SubmitHandler<BorrowLoanFormData> = (data) => {
+    console.log(data);
+  }
+
 
   const renderBorrowFlow = useCallback(() => {
     switch (step) {
@@ -73,16 +82,18 @@ const BorrowPage: NextPage = ({ address }: AuthenticatedPageProps) => {
           />
         );
       }
-
+      case Steps.SHOW_REVENUE_REPORT: {
+        return <ShowRevenueReport stripeKey={watch("stripeKey")} setStep={setStep} report={stripeReport} setReport={setStripeReport}/>;
+      }
       case Steps.ADD_LOAN_DETAILS: {
-        return <AddLoanDetails />;
+        return <AddBorrowRequestDetails watch={watch} register={register} setStep={setStep} report={stripeReport}/>;
       }
       default:
         return <div>Seems like you are lost friend </div>;
     }
   }, [step]);
 
-  return <div>{renderBorrowFlow()}</div>;
+  return <form onSubmit={handleSubmit(createBorrowRequest)}>{renderBorrowFlow()}</form>;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
