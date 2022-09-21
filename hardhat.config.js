@@ -28,14 +28,18 @@ module.exports = {
       accounts: [PRIVATE_KEY],
       chainId: 4,
     },
+    mumbai: {
+      url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+      accounts: [process.env.PRIVATE_KEY]
+    },
     localhost: {
       url: "http://localhost:8545",
       chainId: 31337,
     },
   },
-  solidity: "0.8.8",
+  solidity: "0.8.16",
   etherscan: {
-    apiKey: ETHERSCAN_API_KEY,
+    apiKey: { polygonMumbai: process.env.ETHERSCAN_API_KEY.toString() }
   },
   gasReporter: {
     enabled: true,

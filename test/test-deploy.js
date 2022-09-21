@@ -4,7 +4,7 @@ const { expect, assert } = require("chai")
 describe("Lending", function () {
     let lendingFactory, lending
     beforeEach(async function () {
-        lendingFactory = await ethers.getContractFactory("Lending")
+        lendingFactory = await ethers.getContractFactory("BorrowerLoans")
         lending = await lendingFactory.deploy()
     })
 
