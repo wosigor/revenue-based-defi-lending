@@ -14,7 +14,7 @@ contract BorrowerLoans {
         uint8 payoutRate_,
         uint256 loanFee_,
         string memory baseURI_
-    ) public {
+    ) public returns (bool) {
         require(
             borrowerLoans[msg.sender] == 0,
             "Borrower already published a request"
@@ -33,6 +33,7 @@ contract BorrowerLoans {
         borrowers.push(msg.sender);
         loanRequestAddresses[msg.sender] = loanRequest;
         borrowerLoans[msg.sender] = loanAmount_;
+        return true;
     }
 
     function getAllBorrowers() external view returns (address[] memory) {
