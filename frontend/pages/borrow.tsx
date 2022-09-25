@@ -64,7 +64,7 @@ const BorrowPage: NextPage = ({ address }: AuthenticatedPageProps) => {
     // 2. Get tokenId
     // 3. call createBorrowRequest from smart contract
     // 4. Redirect to Marketplace
-  
+
   };
 
   const renderBorrowFlow = useCallback(() => {
@@ -74,10 +74,7 @@ const BorrowPage: NextPage = ({ address }: AuthenticatedPageProps) => {
           <div className="flex flex-col items-center justify-center ">
             <Heading>Ready to get started? </Heading>
             <p className=" max-w-2xl my-8 text-center">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt
-              provident similique vitae rem tenetur est facilis praesentium
-              odit, deserunt blanditiis velit recusandae iste inventore optio?
-              Dolores optio qui modi deleniti.
+
             </p>
             <Button
               onClick={() => setStep(Steps.CONNECT_STRIPE)}
