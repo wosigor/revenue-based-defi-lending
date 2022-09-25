@@ -40,7 +40,7 @@ const LendModal = ({ isOpen, setIsOpen, borrowerId, borrowerName }: Props) => {
           <div className="text-sm text-gray-500">10 %</div>
         </div>
         <div>
-          <div className="text-gray-600 font-medium text-sm">You will be repayed</div>
+          <div className="text-gray-600 font-medium text-sm">You will be repaid</div>
           <div className="text-sm text-gray-500">10100 EUR</div>
         </div>
         <div className="flex items-center justify-end gap-4">

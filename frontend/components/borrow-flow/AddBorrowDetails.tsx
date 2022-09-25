@@ -29,7 +29,7 @@ const AddBorrowRequestDetails = ({
   return (
     <div className="max-w-2xl  space-y-6 mx-auto ">
       <Heading>Create a Borrow Loan Request</Heading>
-     
+
       <h6 className="text-sm font-bold text-brand-500 ">LOAN DETAILS</h6>
 
       <Input
@@ -52,7 +52,7 @@ const AddBorrowRequestDetails = ({
         value={10}
       />
       <p>
-        Total Repayable Amount : {currencyFormat(watch("amount") * 1.1 || 0)}{" "}
+        Total repaid amount : {currencyFormat(watch("amount") * 1.1 || 0)}{" "}
         {report?.currency.toUpperCase()}
       </p>
       <div className="grid grid-cols-2 gap-4 pt-6">
